@@ -308,14 +308,26 @@ app.post("/api/request", function (req, res) {
 	  
 	  //console.log(GMap)
 	 
+	const load_js= req.body.js=="1"?true:false
+	const load_image= req.body.image=="1"?true:false
 	is_debug= req.body.debug=="1"?true:false
-	is_restart= req.body.debug=="1"?true:false
+	is_restart= req.body.restart=="1"?true:false
+	
+	
+	const jscode= await req.body.jscode
+	
+	const url= await req.body.url
+	
+	
+	const headers= await req.body.header
+	
+	const post_data= await req.body.body
 	
 	//console.log('is_debug',is_debug)
 	
 	//is_debug=true
 	
-	if(is_restart){
+	if(is_restart&&GMap['browser']!=null){
 		var br= GMap['browser']
 		GMap['browser']==null
 		br.close()
@@ -343,10 +355,16 @@ app.post("/api/request", function (req, res) {
 	}
 	*/
     //const browser = await puppeteer.launch();
+	
+	
     const page = await browser.newPage();
 	page.setRequestInterception(true)
 	const client = await page.target().createCDPSession();
-	
+	if(load_js){
+		page.setJavaScriptEnabled(true)
+	} else {
+		page.setJavaScriptEnabled(true)
+	}
 	
 	await page.exposeFunction('md5', text =>
 		crypto.createHash('md5').update(text).digest('hex')
@@ -383,15 +401,7 @@ app.post("/api/request", function (req, res) {
 
     // console.log(req.body.jscode)
 
-    const jscode= await req.body.jscode
-	
-	const url= await req.body.url
-	
-	const load_image= await req.body.image
-	
-	const headers= await req.body.header
-	
-	const post_data= await req.body.body
+
 	
 	var cookies_array=[]
 	
@@ -633,8 +643,9 @@ app.post("/api/request", function (req, res) {
 		
 		console.log("abcxxx",e)
 	}
-	
-	//page.close()
+	if(!is_debug){
+		page.close()
+	}
    
 
     //console.log(message)

@@ -97,11 +97,14 @@
      url:<input id="url"  type="text"/> <input value="Test" id="submit"  type="button"/><input value="BuildRequest" id="bntBuildRequest"  type="button"/>
 
 	 
-	 <div style="display:none;">
+	 <div style="display:inline;">
 	 <input name="timeout" id="timeout" value="1000" title="timeout"/>
 	 <select name="type"> <option value="0">save cookie</option><option value="1">unsave cookie</option> </select>
 
-           <input id="js" type="checkbox"  value="1"/>js
+           <input id="js" type="checkbox"  checked="checked" value="1"/>js
+		   <input id="debug" type="checkbox" checked value="1"/>debug
+		   <input id="image" type="checkbox"   value="1"/>image
+		   <input id="restart" type="checkbox"   value="1"/>restart
 
 	  <input value="frame" id="sframe"  type="button"/>
 
@@ -176,7 +179,10 @@ $('#bntBuildRequest').click(function(){
 
 
        var js=$('#js').is(':checked')?1:0;
-       $.post('/api/buildRequest',{url:$('#url').val(),header:$('#header').val(),jscode:$('#jscode').val(),body:$('#body').val(),timeout:$('#timeout').val(),posturl:$('#posturl').val(),js:js},function(data){
+	   var image=$('#image').is(':checked')?1:0;
+	   var debug=$('#debug').is(':checked')?1:0;
+	   var restart=$('#restart').is(':checked')?1:0;
+       $.post('/api/buildRequest',{url:$('#url').val(),header:$('#header').val(),jscode:$('#jscode').val(),body:$('#body').val(),timeout:$('#timeout').val(),posturl:$('#posturl').val(),js:js,image:image,debug:debug,restart:restart},function(data){
 	    $('#submit').attr('disabled',false)
 	  $('#result').val(data);
 	 
@@ -200,7 +206,10 @@ $('#bntBuildRequest').click(function(){
 	},6*1000)
 
        var js=$('#js').is(':checked')?1:0;
-       $.post('/api/request',{url:$('#url').val(),header:$('#header').val(),jscode:$('#jscode').val(),body:$('#body').val(),timeout:$('#timeout').val(),posturl:$('#posturl').val(),js:js},function(data){
+	    var image=$('#image').is(':checked')?1:0;
+	   var debug=$('#debug').is(':checked')?1:0;
+	   var restart=$('#restart').is(':checked')?1:0;
+       $.post('/api/request',{url:$('#url').val(),header:$('#header').val(),jscode:$('#jscode').val(),body:$('#body').val(),timeout:$('#timeout').val(),posturl:$('#posturl').val(),js:js,image:image,debug:debug,restart:restart},function(data){
 	    $('#submit').attr('disabled',false)
 	  $('#result').val(data);
 
