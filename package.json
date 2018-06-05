@@ -30,11 +30,12 @@
 		"start": "node entry.js"
 	},
 	"dependencies": {
-		"express": "latest",
-		"puppeteer": "latest",
+		"axios": "latest",
 		"body-parser": "latest",
 		"crypto": "latest",
-		"axios": "latest"
+		"express": "latest",
+		"jquery": "^3.3.1",
+		"puppeteer": "latest"
 	},
 	"devDependencies": {
 		"bower": "~1.2.8",

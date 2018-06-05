@@ -76,7 +76,7 @@ function loadJs(filename){
 
 const jss=loadJs().trimScript()
 
-fs.writeFileSync('js.txt', jss)
+//fs.writeFileSync('js.txt', jss)
 
 eval(jss)
 
@@ -313,14 +313,20 @@ app.post("/api/request", function (req, res) {
 	
 	//console.log('is_debug',is_debug)
 	
-	is_debug=true
+	//is_debug=true
 	
 	if(is_restart){
+		var br= GMap['browser']
 		GMap['browser']==null
+		br.close()
 	}
 	
 	if(GMap["browser"]==null){
-		browser =await puppeteer.launch({devtools: true,ignoreHTTPSErrors:true});
+		if(is_debug){
+			browser =await puppeteer.launch({devtools: true,ignoreHTTPSErrors:true});
+		} else {
+			browser =await puppeteer.launch({ignoreHTTPSErrors:true});
+		}
 		GMap["browser"]=await browser
 	} else {
 		browser=await GMap['browser']
@@ -359,7 +365,7 @@ app.post("/api/request", function (req, res) {
 			 (async ()=>{
 				await page.goto(url)
 				var content= await page.content()
-				console.log(content)
+				//console.log(content)
 				return content
 			 })()
 			}
@@ -437,12 +443,15 @@ app.post("/api/request", function (req, res) {
 		
 		//
 		
+		console.log('xxxxxxxxxxxxadfsadfsafasdfasdfasfdas')
+		
 		(async (browser)=>{
 			//console.log('xxxxxxxxxx')
 			var page=await target.page()
 			page.exposeFunction('loadjs', (filename) => {
 					return loadJs(filename)
-				})			
+				})
+			
 		})()
 		
 		
@@ -451,11 +460,14 @@ app.post("/api/request", function (req, res) {
 	
 	await browser.on('disconnected',function(){
 		
-		GMap['browser']=null
-		
+	   GMap['browser']=null
+
 	})
   
    page.on('request', request => {
+	   
+	   
+	  
 	   
 	  console.log('request',request.url())
 
@@ -504,6 +516,8 @@ app.post("/api/request", function (req, res) {
 	  }
 	  
 
+	  
+
 	  /*
 	  
 	  if (header['Host']) {
@@ -545,18 +559,27 @@ app.post("/api/request", function (req, res) {
     });
    
    try {
+	   
+	   
+	//   await page.evaluate(jss)
+	   
+	  await page.once('load', function(){
+		    page.evaluate(jss)
+	   });	
 
-    await page.goto(req.body.url);
+    
 	
 
 	
-	//await page.evaluate(jss)
+	await page.goto(req.body.url);
 	
 	
-	page.evaluateOnNewDocument(function(){
 	
-	eval(jss)
 	
+	page.evaluateOnNewDocument(function(jss){
+	
+		//eval(jss)
+
 	},jss)
 	
 	 /*
